@@ -1,0 +1,787 @@
+Created by PLY version 3.11 (http://www.dabeaz.com/ply)
+
+Unused terminals:
+
+    FLOAT_LIT
+    STRING_LIT
+
+Grammar
+
+Rule 0     S' -> program
+Rule 1     program -> statement_list
+Rule 2     statement_list -> statement_list statement
+Rule 3     statement_list -> statement
+Rule 4     statement_list -> statement_list NEWLINE
+Rule 5     statement_list -> NEWLINE
+Rule 6     statement -> directive
+Rule 7     statement -> label_def
+Rule 8     statement -> instruction
+Rule 9     directive -> DIRECTIVE IDENT
+Rule 10    directive -> DIRECTIVE DIRECTIVE
+Rule 11    directive -> DIRECTIVE
+Rule 12    directive -> DIRECTIVE IDENT COMMA AT IDENT
+Rule 13    label_def -> IDENT COLON type_expr COLON
+Rule 14    label_def -> IDENT COLON
+Rule 15    instruction -> OPCODE operand_list
+Rule 16    instruction -> OPCODE
+Rule 17    operand_list -> operand_list COMMA operand
+Rule 18    operand_list -> operand
+Rule 19    operand -> REGISTER COLON type_expr
+Rule 20    operand -> REGISTER
+Rule 21    operand -> HASH INT_LIT COLON type_expr
+Rule 22    operand -> HASH INT_LIT
+Rule 23    operand -> HASH MINUS INT_LIT COLON type_expr
+Rule 24    operand -> HASH MINUS INT_LIT
+Rule 25    operand -> LBRACKET REGISTER PLUS INT_LIT RBRACKET COLON type_expr
+Rule 26    operand -> LBRACKET REGISTER MINUS INT_LIT RBRACKET COLON type_expr
+Rule 27    operand -> LBRACKET REGISTER PLUS INT_LIT RBRACKET
+Rule 28    operand -> LBRACKET REGISTER MINUS INT_LIT RBRACKET
+Rule 29    operand -> LBRACKET REGISTER RBRACKET COLON type_expr
+Rule 30    operand -> LBRACKET REGISTER RBRACKET
+Rule 31    operand -> IDENT
+Rule 32    type_expr -> TYPE
+Rule 33    type_expr -> TYPE LANGLE type_expr RANGLE
+
+Terminals, with rules where they appear
+
+AT                   : 12
+COLON                : 13 13 14 19 21 23 25 26 29
+COMMA                : 12 17
+DIRECTIVE            : 9 10 10 11 12
+FLOAT_LIT            : 
+HASH                 : 21 22 23 24
+IDENT                : 9 12 12 13 14 31
+INT_LIT              : 21 22 23 24 25 26 27 28
+LANGLE               : 33
+LBRACKET             : 25 26 27 28 29 30
+MINUS                : 23 24 26 28
+NEWLINE              : 4 5
+OPCODE               : 15 16
+PLUS                 : 25 27
+RANGLE               : 33
+RBRACKET             : 25 26 27 28 29 30
+REGISTER             : 19 20 25 26 27 28 29 30
+STRING_LIT           : 
+TYPE                 : 32 33
+error                : 
+
+Nonterminals, with rules where they appear
+
+directive            : 6
+instruction          : 8
+label_def            : 7
+operand              : 17 18
+operand_list         : 15 17
+program              : 0
+statement            : 2 3
+statement_list       : 1 2 4
+type_expr            : 13 19 21 23 25 26 29 33
+
+Parsing method: LALR
+
+state 0
+
+    (0) S' -> . program
+    (1) program -> . statement_list
+    (2) statement_list -> . statement_list statement
+    (3) statement_list -> . statement
+    (4) statement_list -> . statement_list NEWLINE
+    (5) statement_list -> . NEWLINE
+    (6) statement -> . directive
+    (7) statement -> . label_def
+    (8) statement -> . instruction
+    (9) directive -> . DIRECTIVE IDENT
+    (10) directive -> . DIRECTIVE DIRECTIVE
+    (11) directive -> . DIRECTIVE
+    (12) directive -> . DIRECTIVE IDENT COMMA AT IDENT
+    (13) label_def -> . IDENT COLON type_expr COLON
+    (14) label_def -> . IDENT COLON
+    (15) instruction -> . OPCODE operand_list
+    (16) instruction -> . OPCODE
+
+    NEWLINE         shift and go to state 4
+    DIRECTIVE       shift and go to state 8
+    IDENT           shift and go to state 9
+    OPCODE          shift and go to state 10
+
+    program                        shift and go to state 1
+    statement_list                 shift and go to state 2
+    statement                      shift and go to state 3
+    directive                      shift and go to state 5
+    label_def                      shift and go to state 6
+    instruction                    shift and go to state 7
+
+state 1
+
+    (0) S' -> program .
+
+
+
+state 2
+
+    (1) program -> statement_list .
+    (2) statement_list -> statement_list . statement
+    (4) statement_list -> statement_list . NEWLINE
+    (6) statement -> . directive
+    (7) statement -> . label_def
+    (8) statement -> . instruction
+    (9) directive -> . DIRECTIVE IDENT
+    (10) directive -> . DIRECTIVE DIRECTIVE
+    (11) directive -> . DIRECTIVE
+    (12) directive -> . DIRECTIVE IDENT COMMA AT IDENT
+    (13) label_def -> . IDENT COLON type_expr COLON
+    (14) label_def -> . IDENT COLON
+    (15) instruction -> . OPCODE operand_list
+    (16) instruction -> . OPCODE
+
+    $end            reduce using rule 1 (program -> statement_list .)
+    NEWLINE         shift and go to state 12
+    DIRECTIVE       shift and go to state 8
+    IDENT           shift and go to state 9
+    OPCODE          shift and go to state 10
+
+    statement                      shift and go to state 11
+    directive                      shift and go to state 5
+    label_def                      shift and go to state 6
+    instruction                    shift and go to state 7
+
+state 3
+
+    (3) statement_list -> statement .
+
+    NEWLINE         reduce using rule 3 (statement_list -> statement .)
+    DIRECTIVE       reduce using rule 3 (statement_list -> statement .)
+    IDENT           reduce using rule 3 (statement_list -> statement .)
+    OPCODE          reduce using rule 3 (statement_list -> statement .)
+    $end            reduce using rule 3 (statement_list -> statement .)
+
+
+state 4
+
+    (5) statement_list -> NEWLINE .
+
+    NEWLINE         reduce using rule 5 (statement_list -> NEWLINE .)
+    DIRECTIVE       reduce using rule 5 (statement_list -> NEWLINE .)
+    IDENT           reduce using rule 5 (statement_list -> NEWLINE .)
+    OPCODE          reduce using rule 5 (statement_list -> NEWLINE .)
+    $end            reduce using rule 5 (statement_list -> NEWLINE .)
+
+
+state 5
+
+    (6) statement -> directive .
+
+    NEWLINE         reduce using rule 6 (statement -> directive .)
+    DIRECTIVE       reduce using rule 6 (statement -> directive .)
+    IDENT           reduce using rule 6 (statement -> directive .)
+    OPCODE          reduce using rule 6 (statement -> directive .)
+    $end            reduce using rule 6 (statement -> directive .)
+
+
+state 6
+
+    (7) statement -> label_def .
+
+    NEWLINE         reduce using rule 7 (statement -> label_def .)
+    DIRECTIVE       reduce using rule 7 (statement -> label_def .)
+    IDENT           reduce using rule 7 (statement -> label_def .)
+    OPCODE          reduce using rule 7 (statement -> label_def .)
+    $end            reduce using rule 7 (statement -> label_def .)
+
+
+state 7
+
+    (8) statement -> instruction .
+
+    NEWLINE         reduce using rule 8 (statement -> instruction .)
+    DIRECTIVE       reduce using rule 8 (statement -> instruction .)
+    IDENT           reduce using rule 8 (statement -> instruction .)
+    OPCODE          reduce using rule 8 (statement -> instruction .)
+    $end            reduce using rule 8 (statement -> instruction .)
+
+
+state 8
+
+    (9) directive -> DIRECTIVE . IDENT
+    (10) directive -> DIRECTIVE . DIRECTIVE
+    (11) directive -> DIRECTIVE .
+    (12) directive -> DIRECTIVE . IDENT COMMA AT IDENT
+
+  ! shift/reduce conflict for DIRECTIVE resolved as shift
+  ! shift/reduce conflict for IDENT resolved as shift
+    IDENT           shift and go to state 14
+    DIRECTIVE       shift and go to state 13
+    NEWLINE         reduce using rule 11 (directive -> DIRECTIVE .)
+    OPCODE          reduce using rule 11 (directive -> DIRECTIVE .)
+    $end            reduce using rule 11 (directive -> DIRECTIVE .)
+
+  ! DIRECTIVE       [ reduce using rule 11 (directive -> DIRECTIVE .) ]
+  ! IDENT           [ reduce using rule 11 (directive -> DIRECTIVE .) ]
+
+
+state 9
+
+    (13) label_def -> IDENT . COLON type_expr COLON
+    (14) label_def -> IDENT . COLON
+
+    COLON           shift and go to state 15
+
+
+state 10
+
+    (15) instruction -> OPCODE . operand_list
+    (16) instruction -> OPCODE .
+    (17) operand_list -> . operand_list COMMA operand
+    (18) operand_list -> . operand
+    (19) operand -> . REGISTER COLON type_expr
+    (20) operand -> . REGISTER
+    (21) operand -> . HASH INT_LIT COLON type_expr
+    (22) operand -> . HASH INT_LIT
+    (23) operand -> . HASH MINUS INT_LIT COLON type_expr
+    (24) operand -> . HASH MINUS INT_LIT
+    (25) operand -> . LBRACKET REGISTER PLUS INT_LIT RBRACKET COLON type_expr
+    (26) operand -> . LBRACKET REGISTER MINUS INT_LIT RBRACKET COLON type_expr
+    (27) operand -> . LBRACKET REGISTER PLUS INT_LIT RBRACKET
+    (28) operand -> . LBRACKET REGISTER MINUS INT_LIT RBRACKET
+    (29) operand -> . LBRACKET REGISTER RBRACKET COLON type_expr
+    (30) operand -> . LBRACKET REGISTER RBRACKET
+    (31) operand -> . IDENT
+
+  ! shift/reduce conflict for IDENT resolved as shift
+    NEWLINE         reduce using rule 16 (instruction -> OPCODE .)
+    DIRECTIVE       reduce using rule 16 (instruction -> OPCODE .)
+    OPCODE          reduce using rule 16 (instruction -> OPCODE .)
+    $end            reduce using rule 16 (instruction -> OPCODE .)
+    REGISTER        shift and go to state 18
+    HASH            shift and go to state 19
+    LBRACKET        shift and go to state 20
+    IDENT           shift and go to state 21
+
+  ! IDENT           [ reduce using rule 16 (instruction -> OPCODE .) ]
+
+    operand_list                   shift and go to state 16
+    operand                        shift and go to state 17
+
+state 11
+
+    (2) statement_list -> statement_list statement .
+
+    NEWLINE         reduce using rule 2 (statement_list -> statement_list statement .)
+    DIRECTIVE       reduce using rule 2 (statement_list -> statement_list statement .)
+    IDENT           reduce using rule 2 (statement_list -> statement_list statement .)
+    OPCODE          reduce using rule 2 (statement_list -> statement_list statement .)
+    $end            reduce using rule 2 (statement_list -> statement_list statement .)
+
+
+state 12
+
+    (4) statement_list -> statement_list NEWLINE .
+
+    NEWLINE         reduce using rule 4 (statement_list -> statement_list NEWLINE .)
+    DIRECTIVE       reduce using rule 4 (statement_list -> statement_list NEWLINE .)
+    IDENT           reduce using rule 4 (statement_list -> statement_list NEWLINE .)
+    OPCODE          reduce using rule 4 (statement_list -> statement_list NEWLINE .)
+    $end            reduce using rule 4 (statement_list -> statement_list NEWLINE .)
+
+
+state 13
+
+    (10) directive -> DIRECTIVE DIRECTIVE .
+
+    NEWLINE         reduce using rule 10 (directive -> DIRECTIVE DIRECTIVE .)
+    DIRECTIVE       reduce using rule 10 (directive -> DIRECTIVE DIRECTIVE .)
+    IDENT           reduce using rule 10 (directive -> DIRECTIVE DIRECTIVE .)
+    OPCODE          reduce using rule 10 (directive -> DIRECTIVE DIRECTIVE .)
+    $end            reduce using rule 10 (directive -> DIRECTIVE DIRECTIVE .)
+
+
+state 14
+
+    (9) directive -> DIRECTIVE IDENT .
+    (12) directive -> DIRECTIVE IDENT . COMMA AT IDENT
+
+    NEWLINE         reduce using rule 9 (directive -> DIRECTIVE IDENT .)
+    DIRECTIVE       reduce using rule 9 (directive -> DIRECTIVE IDENT .)
+    IDENT           reduce using rule 9 (directive -> DIRECTIVE IDENT .)
+    OPCODE          reduce using rule 9 (directive -> DIRECTIVE IDENT .)
+    $end            reduce using rule 9 (directive -> DIRECTIVE IDENT .)
+    COMMA           shift and go to state 22
+
+
+state 15
+
+    (13) label_def -> IDENT COLON . type_expr COLON
+    (14) label_def -> IDENT COLON .
+    (32) type_expr -> . TYPE
+    (33) type_expr -> . TYPE LANGLE type_expr RANGLE
+
+    NEWLINE         reduce using rule 14 (label_def -> IDENT COLON .)
+    DIRECTIVE       reduce using rule 14 (label_def -> IDENT COLON .)
+    IDENT           reduce using rule 14 (label_def -> IDENT COLON .)
+    OPCODE          reduce using rule 14 (label_def -> IDENT COLON .)
+    $end            reduce using rule 14 (label_def -> IDENT COLON .)
+    TYPE            shift and go to state 24
+
+    type_expr                      shift and go to state 23
+
+state 16
+
+    (15) instruction -> OPCODE operand_list .
+    (17) operand_list -> operand_list . COMMA operand
+
+    NEWLINE         reduce using rule 15 (instruction -> OPCODE operand_list .)
+    DIRECTIVE       reduce using rule 15 (instruction -> OPCODE operand_list .)
+    IDENT           reduce using rule 15 (instruction -> OPCODE operand_list .)
+    OPCODE          reduce using rule 15 (instruction -> OPCODE operand_list .)
+    $end            reduce using rule 15 (instruction -> OPCODE operand_list .)
+    COMMA           shift and go to state 25
+
+
+state 17
+
+    (18) operand_list -> operand .
+
+    COMMA           reduce using rule 18 (operand_list -> operand .)
+    NEWLINE         reduce using rule 18 (operand_list -> operand .)
+    DIRECTIVE       reduce using rule 18 (operand_list -> operand .)
+    IDENT           reduce using rule 18 (operand_list -> operand .)
+    OPCODE          reduce using rule 18 (operand_list -> operand .)
+    $end            reduce using rule 18 (operand_list -> operand .)
+
+
+state 18
+
+    (19) operand -> REGISTER . COLON type_expr
+    (20) operand -> REGISTER .
+
+    COLON           shift and go to state 26
+    COMMA           reduce using rule 20 (operand -> REGISTER .)
+    NEWLINE         reduce using rule 20 (operand -> REGISTER .)
+    DIRECTIVE       reduce using rule 20 (operand -> REGISTER .)
+    IDENT           reduce using rule 20 (operand -> REGISTER .)
+    OPCODE          reduce using rule 20 (operand -> REGISTER .)
+    $end            reduce using rule 20 (operand -> REGISTER .)
+
+
+state 19
+
+    (21) operand -> HASH . INT_LIT COLON type_expr
+    (22) operand -> HASH . INT_LIT
+    (23) operand -> HASH . MINUS INT_LIT COLON type_expr
+    (24) operand -> HASH . MINUS INT_LIT
+
+    INT_LIT         shift and go to state 27
+    MINUS           shift and go to state 28
+
+
+state 20
+
+    (25) operand -> LBRACKET . REGISTER PLUS INT_LIT RBRACKET COLON type_expr
+    (26) operand -> LBRACKET . REGISTER MINUS INT_LIT RBRACKET COLON type_expr
+    (27) operand -> LBRACKET . REGISTER PLUS INT_LIT RBRACKET
+    (28) operand -> LBRACKET . REGISTER MINUS INT_LIT RBRACKET
+    (29) operand -> LBRACKET . REGISTER RBRACKET COLON type_expr
+    (30) operand -> LBRACKET . REGISTER RBRACKET
+
+    REGISTER        shift and go to state 29
+
+
+state 21
+
+    (31) operand -> IDENT .
+
+    COMMA           reduce using rule 31 (operand -> IDENT .)
+    NEWLINE         reduce using rule 31 (operand -> IDENT .)
+    DIRECTIVE       reduce using rule 31 (operand -> IDENT .)
+    IDENT           reduce using rule 31 (operand -> IDENT .)
+    OPCODE          reduce using rule 31 (operand -> IDENT .)
+    $end            reduce using rule 31 (operand -> IDENT .)
+
+
+state 22
+
+    (12) directive -> DIRECTIVE IDENT COMMA . AT IDENT
+
+    AT              shift and go to state 30
+
+
+state 23
+
+    (13) label_def -> IDENT COLON type_expr . COLON
+
+    COLON           shift and go to state 31
+
+
+state 24
+
+    (32) type_expr -> TYPE .
+    (33) type_expr -> TYPE . LANGLE type_expr RANGLE
+
+    COLON           reduce using rule 32 (type_expr -> TYPE .)
+    COMMA           reduce using rule 32 (type_expr -> TYPE .)
+    NEWLINE         reduce using rule 32 (type_expr -> TYPE .)
+    DIRECTIVE       reduce using rule 32 (type_expr -> TYPE .)
+    IDENT           reduce using rule 32 (type_expr -> TYPE .)
+    OPCODE          reduce using rule 32 (type_expr -> TYPE .)
+    $end            reduce using rule 32 (type_expr -> TYPE .)
+    RANGLE          reduce using rule 32 (type_expr -> TYPE .)
+    LANGLE          shift and go to state 32
+
+
+state 25
+
+    (17) operand_list -> operand_list COMMA . operand
+    (19) operand -> . REGISTER COLON type_expr
+    (20) operand -> . REGISTER
+    (21) operand -> . HASH INT_LIT COLON type_expr
+    (22) operand -> . HASH INT_LIT
+    (23) operand -> . HASH MINUS INT_LIT COLON type_expr
+    (24) operand -> . HASH MINUS INT_LIT
+    (25) operand -> . LBRACKET REGISTER PLUS INT_LIT RBRACKET COLON type_expr
+    (26) operand -> . LBRACKET REGISTER MINUS INT_LIT RBRACKET COLON type_expr
+    (27) operand -> . LBRACKET REGISTER PLUS INT_LIT RBRACKET
+    (28) operand -> . LBRACKET REGISTER MINUS INT_LIT RBRACKET
+    (29) operand -> . LBRACKET REGISTER RBRACKET COLON type_expr
+    (30) operand -> . LBRACKET REGISTER RBRACKET
+    (31) operand -> . IDENT
+
+    REGISTER        shift and go to state 18
+    HASH            shift and go to state 19
+    LBRACKET        shift and go to state 20
+    IDENT           shift and go to state 21
+
+    operand                        shift and go to state 33
+
+state 26
+
+    (19) operand -> REGISTER COLON . type_expr
+    (32) type_expr -> . TYPE
+    (33) type_expr -> . TYPE LANGLE type_expr RANGLE
+
+    TYPE            shift and go to state 24
+
+    type_expr                      shift and go to state 34
+
+state 27
+
+    (21) operand -> HASH INT_LIT . COLON type_expr
+    (22) operand -> HASH INT_LIT .
+
+    COLON           shift and go to state 35
+    COMMA           reduce using rule 22 (operand -> HASH INT_LIT .)
+    NEWLINE         reduce using rule 22 (operand -> HASH INT_LIT .)
+    DIRECTIVE       reduce using rule 22 (operand -> HASH INT_LIT .)
+    IDENT           reduce using rule 22 (operand -> HASH INT_LIT .)
+    OPCODE          reduce using rule 22 (operand -> HASH INT_LIT .)
+    $end            reduce using rule 22 (operand -> HASH INT_LIT .)
+
+
+state 28
+
+    (23) operand -> HASH MINUS . INT_LIT COLON type_expr
+    (24) operand -> HASH MINUS . INT_LIT
+
+    INT_LIT         shift and go to state 36
+
+
+state 29
+
+    (25) operand -> LBRACKET REGISTER . PLUS INT_LIT RBRACKET COLON type_expr
+    (26) operand -> LBRACKET REGISTER . MINUS INT_LIT RBRACKET COLON type_expr
+    (27) operand -> LBRACKET REGISTER . PLUS INT_LIT RBRACKET
+    (28) operand -> LBRACKET REGISTER . MINUS INT_LIT RBRACKET
+    (29) operand -> LBRACKET REGISTER . RBRACKET COLON type_expr
+    (30) operand -> LBRACKET REGISTER . RBRACKET
+
+    PLUS            shift and go to state 37
+    MINUS           shift and go to state 39
+    RBRACKET        shift and go to state 38
+
+
+state 30
+
+    (12) directive -> DIRECTIVE IDENT COMMA AT . IDENT
+
+    IDENT           shift and go to state 40
+
+
+state 31
+
+    (13) label_def -> IDENT COLON type_expr COLON .
+
+    NEWLINE         reduce using rule 13 (label_def -> IDENT COLON type_expr COLON .)
+    DIRECTIVE       reduce using rule 13 (label_def -> IDENT COLON type_expr COLON .)
+    IDENT           reduce using rule 13 (label_def -> IDENT COLON type_expr COLON .)
+    OPCODE          reduce using rule 13 (label_def -> IDENT COLON type_expr COLON .)
+    $end            reduce using rule 13 (label_def -> IDENT COLON type_expr COLON .)
+
+
+state 32
+
+    (33) type_expr -> TYPE LANGLE . type_expr RANGLE
+    (32) type_expr -> . TYPE
+    (33) type_expr -> . TYPE LANGLE type_expr RANGLE
+
+    TYPE            shift and go to state 24
+
+    type_expr                      shift and go to state 41
+
+state 33
+
+    (17) operand_list -> operand_list COMMA operand .
+
+    COMMA           reduce using rule 17 (operand_list -> operand_list COMMA operand .)
+    NEWLINE         reduce using rule 17 (operand_list -> operand_list COMMA operand .)
+    DIRECTIVE       reduce using rule 17 (operand_list -> operand_list COMMA operand .)
+    IDENT           reduce using rule 17 (operand_list -> operand_list COMMA operand .)
+    OPCODE          reduce using rule 17 (operand_list -> operand_list COMMA operand .)
+    $end            reduce using rule 17 (operand_list -> operand_list COMMA operand .)
+
+
+state 34
+
+    (19) operand -> REGISTER COLON type_expr .
+
+    COMMA           reduce using rule 19 (operand -> REGISTER COLON type_expr .)
+    NEWLINE         reduce using rule 19 (operand -> REGISTER COLON type_expr .)
+    DIRECTIVE       reduce using rule 19 (operand -> REGISTER COLON type_expr .)
+    IDENT           reduce using rule 19 (operand -> REGISTER COLON type_expr .)
+    OPCODE          reduce using rule 19 (operand -> REGISTER COLON type_expr .)
+    $end            reduce using rule 19 (operand -> REGISTER COLON type_expr .)
+
+
+state 35
+
+    (21) operand -> HASH INT_LIT COLON . type_expr
+    (32) type_expr -> . TYPE
+    (33) type_expr -> . TYPE LANGLE type_expr RANGLE
+
+    TYPE            shift and go to state 24
+
+    type_expr                      shift and go to state 42
+
+state 36
+
+    (23) operand -> HASH MINUS INT_LIT . COLON type_expr
+    (24) operand -> HASH MINUS INT_LIT .
+
+    COLON           shift and go to state 43
+    COMMA           reduce using rule 24 (operand -> HASH MINUS INT_LIT .)
+    NEWLINE         reduce using rule 24 (operand -> HASH MINUS INT_LIT .)
+    DIRECTIVE       reduce using rule 24 (operand -> HASH MINUS INT_LIT .)
+    IDENT           reduce using rule 24 (operand -> HASH MINUS INT_LIT .)
+    OPCODE          reduce using rule 24 (operand -> HASH MINUS INT_LIT .)
+    $end            reduce using rule 24 (operand -> HASH MINUS INT_LIT .)
+
+
+state 37
+
+    (25) operand -> LBRACKET REGISTER PLUS . INT_LIT RBRACKET COLON type_expr
+    (27) operand -> LBRACKET REGISTER PLUS . INT_LIT RBRACKET
+
+    INT_LIT         shift and go to state 44
+
+
+state 38
+
+    (29) operand -> LBRACKET REGISTER RBRACKET . COLON type_expr
+    (30) operand -> LBRACKET REGISTER RBRACKET .
+
+    COLON           shift and go to state 45
+    COMMA           reduce using rule 30 (operand -> LBRACKET REGISTER RBRACKET .)
+    NEWLINE         reduce using rule 30 (operand -> LBRACKET REGISTER RBRACKET .)
+    DIRECTIVE       reduce using rule 30 (operand -> LBRACKET REGISTER RBRACKET .)
+    IDENT           reduce using rule 30 (operand -> LBRACKET REGISTER RBRACKET .)
+    OPCODE          reduce using rule 30 (operand -> LBRACKET REGISTER RBRACKET .)
+    $end            reduce using rule 30 (operand -> LBRACKET REGISTER RBRACKET .)
+
+
+state 39
+
+    (26) operand -> LBRACKET REGISTER MINUS . INT_LIT RBRACKET COLON type_expr
+    (28) operand -> LBRACKET REGISTER MINUS . INT_LIT RBRACKET
+
+    INT_LIT         shift and go to state 46
+
+
+state 40
+
+    (12) directive -> DIRECTIVE IDENT COMMA AT IDENT .
+
+    NEWLINE         reduce using rule 12 (directive -> DIRECTIVE IDENT COMMA AT IDENT .)
+    DIRECTIVE       reduce using rule 12 (directive -> DIRECTIVE IDENT COMMA AT IDENT .)
+    IDENT           reduce using rule 12 (directive -> DIRECTIVE IDENT COMMA AT IDENT .)
+    OPCODE          reduce using rule 12 (directive -> DIRECTIVE IDENT COMMA AT IDENT .)
+    $end            reduce using rule 12 (directive -> DIRECTIVE IDENT COMMA AT IDENT .)
+
+
+state 41
+
+    (33) type_expr -> TYPE LANGLE type_expr . RANGLE
+
+    RANGLE          shift and go to state 47
+
+
+state 42
+
+    (21) operand -> HASH INT_LIT COLON type_expr .
+
+    COMMA           reduce using rule 21 (operand -> HASH INT_LIT COLON type_expr .)
+    NEWLINE         reduce using rule 21 (operand -> HASH INT_LIT COLON type_expr .)
+    DIRECTIVE       reduce using rule 21 (operand -> HASH INT_LIT COLON type_expr .)
+    IDENT           reduce using rule 21 (operand -> HASH INT_LIT COLON type_expr .)
+    OPCODE          reduce using rule 21 (operand -> HASH INT_LIT COLON type_expr .)
+    $end            reduce using rule 21 (operand -> HASH INT_LIT COLON type_expr .)
+
+
+state 43
+
+    (23) operand -> HASH MINUS INT_LIT COLON . type_expr
+    (32) type_expr -> . TYPE
+    (33) type_expr -> . TYPE LANGLE type_expr RANGLE
+
+    TYPE            shift and go to state 24
+
+    type_expr                      shift and go to state 48
+
+state 44
+
+    (25) operand -> LBRACKET REGISTER PLUS INT_LIT . RBRACKET COLON type_expr
+    (27) operand -> LBRACKET REGISTER PLUS INT_LIT . RBRACKET
+
+    RBRACKET        shift and go to state 49
+
+
+state 45
+
+    (29) operand -> LBRACKET REGISTER RBRACKET COLON . type_expr
+    (32) type_expr -> . TYPE
+    (33) type_expr -> . TYPE LANGLE type_expr RANGLE
+
+    TYPE            shift and go to state 24
+
+    type_expr                      shift and go to state 50
+
+state 46
+
+    (26) operand -> LBRACKET REGISTER MINUS INT_LIT . RBRACKET COLON type_expr
+    (28) operand -> LBRACKET REGISTER MINUS INT_LIT . RBRACKET
+
+    RBRACKET        shift and go to state 51
+
+
+state 47
+
+    (33) type_expr -> TYPE LANGLE type_expr RANGLE .
+
+    COLON           reduce using rule 33 (type_expr -> TYPE LANGLE type_expr RANGLE .)
+    COMMA           reduce using rule 33 (type_expr -> TYPE LANGLE type_expr RANGLE .)
+    NEWLINE         reduce using rule 33 (type_expr -> TYPE LANGLE type_expr RANGLE .)
+    DIRECTIVE       reduce using rule 33 (type_expr -> TYPE LANGLE type_expr RANGLE .)
+    IDENT           reduce using rule 33 (type_expr -> TYPE LANGLE type_expr RANGLE .)
+    OPCODE          reduce using rule 33 (type_expr -> TYPE LANGLE type_expr RANGLE .)
+    $end            reduce using rule 33 (type_expr -> TYPE LANGLE type_expr RANGLE .)
+    RANGLE          reduce using rule 33 (type_expr -> TYPE LANGLE type_expr RANGLE .)
+
+
+state 48
+
+    (23) operand -> HASH MINUS INT_LIT COLON type_expr .
+
+    COMMA           reduce using rule 23 (operand -> HASH MINUS INT_LIT COLON type_expr .)
+    NEWLINE         reduce using rule 23 (operand -> HASH MINUS INT_LIT COLON type_expr .)
+    DIRECTIVE       reduce using rule 23 (operand -> HASH MINUS INT_LIT COLON type_expr .)
+    IDENT           reduce using rule 23 (operand -> HASH MINUS INT_LIT COLON type_expr .)
+    OPCODE          reduce using rule 23 (operand -> HASH MINUS INT_LIT COLON type_expr .)
+    $end            reduce using rule 23 (operand -> HASH MINUS INT_LIT COLON type_expr .)
+
+
+state 49
+
+    (25) operand -> LBRACKET REGISTER PLUS INT_LIT RBRACKET . COLON type_expr
+    (27) operand -> LBRACKET REGISTER PLUS INT_LIT RBRACKET .
+
+    COLON           shift and go to state 52
+    COMMA           reduce using rule 27 (operand -> LBRACKET REGISTER PLUS INT_LIT RBRACKET .)
+    NEWLINE         reduce using rule 27 (operand -> LBRACKET REGISTER PLUS INT_LIT RBRACKET .)
+    DIRECTIVE       reduce using rule 27 (operand -> LBRACKET REGISTER PLUS INT_LIT RBRACKET .)
+    IDENT           reduce using rule 27 (operand -> LBRACKET REGISTER PLUS INT_LIT RBRACKET .)
+    OPCODE          reduce using rule 27 (operand -> LBRACKET REGISTER PLUS INT_LIT RBRACKET .)
+    $end            reduce using rule 27 (operand -> LBRACKET REGISTER PLUS INT_LIT RBRACKET .)
+
+
+state 50
+
+    (29) operand -> LBRACKET REGISTER RBRACKET COLON type_expr .
+
+    COMMA           reduce using rule 29 (operand -> LBRACKET REGISTER RBRACKET COLON type_expr .)
+    NEWLINE         reduce using rule 29 (operand -> LBRACKET REGISTER RBRACKET COLON type_expr .)
+    DIRECTIVE       reduce using rule 29 (operand -> LBRACKET REGISTER RBRACKET COLON type_expr .)
+    IDENT           reduce using rule 29 (operand -> LBRACKET REGISTER RBRACKET COLON type_expr .)
+    OPCODE          reduce using rule 29 (operand -> LBRACKET REGISTER RBRACKET COLON type_expr .)
+    $end            reduce using rule 29 (operand -> LBRACKET REGISTER RBRACKET COLON type_expr .)
+
+
+state 51
+
+    (26) operand -> LBRACKET REGISTER MINUS INT_LIT RBRACKET . COLON type_expr
+    (28) operand -> LBRACKET REGISTER MINUS INT_LIT RBRACKET .
+
+    COLON           shift and go to state 53
+    COMMA           reduce using rule 28 (operand -> LBRACKET REGISTER MINUS INT_LIT RBRACKET .)
+    NEWLINE         reduce using rule 28 (operand -> LBRACKET REGISTER MINUS INT_LIT RBRACKET .)
+    DIRECTIVE       reduce using rule 28 (operand -> LBRACKET REGISTER MINUS INT_LIT RBRACKET .)
+    IDENT           reduce using rule 28 (operand -> LBRACKET REGISTER MINUS INT_LIT RBRACKET .)
+    OPCODE          reduce using rule 28 (operand -> LBRACKET REGISTER MINUS INT_LIT RBRACKET .)
+    $end            reduce using rule 28 (operand -> LBRACKET REGISTER MINUS INT_LIT RBRACKET .)
+
+
+state 52
+
+    (25) operand -> LBRACKET REGISTER PLUS INT_LIT RBRACKET COLON . type_expr
+    (32) type_expr -> . TYPE
+    (33) type_expr -> . TYPE LANGLE type_expr RANGLE
+
+    TYPE            shift and go to state 24
+
+    type_expr                      shift and go to state 54
+
+state 53
+
+    (26) operand -> LBRACKET REGISTER MINUS INT_LIT RBRACKET COLON . type_expr
+    (32) type_expr -> . TYPE
+    (33) type_expr -> . TYPE LANGLE type_expr RANGLE
+
+    TYPE            shift and go to state 24
+
+    type_expr                      shift and go to state 55
+
+state 54
+
+    (25) operand -> LBRACKET REGISTER PLUS INT_LIT RBRACKET COLON type_expr .
+
+    COMMA           reduce using rule 25 (operand -> LBRACKET REGISTER PLUS INT_LIT RBRACKET COLON type_expr .)
+    NEWLINE         reduce using rule 25 (operand -> LBRACKET REGISTER PLUS INT_LIT RBRACKET COLON type_expr .)
+    DIRECTIVE       reduce using rule 25 (operand -> LBRACKET REGISTER PLUS INT_LIT RBRACKET COLON type_expr .)
+    IDENT           reduce using rule 25 (operand -> LBRACKET REGISTER PLUS INT_LIT RBRACKET COLON type_expr .)
+    OPCODE          reduce using rule 25 (operand -> LBRACKET REGISTER PLUS INT_LIT RBRACKET COLON type_expr .)
+    $end            reduce using rule 25 (operand -> LBRACKET REGISTER PLUS INT_LIT RBRACKET COLON type_expr .)
+
+
+state 55
+
+    (26) operand -> LBRACKET REGISTER MINUS INT_LIT RBRACKET COLON type_expr .
+
+    COMMA           reduce using rule 26 (operand -> LBRACKET REGISTER MINUS INT_LIT RBRACKET COLON type_expr .)
+    NEWLINE         reduce using rule 26 (operand -> LBRACKET REGISTER MINUS INT_LIT RBRACKET COLON type_expr .)
+    DIRECTIVE       reduce using rule 26 (operand -> LBRACKET REGISTER MINUS INT_LIT RBRACKET COLON type_expr .)
+    IDENT           reduce using rule 26 (operand -> LBRACKET REGISTER MINUS INT_LIT RBRACKET COLON type_expr .)
+    OPCODE          reduce using rule 26 (operand -> LBRACKET REGISTER MINUS INT_LIT RBRACKET COLON type_expr .)
+    $end            reduce using rule 26 (operand -> LBRACKET REGISTER MINUS INT_LIT RBRACKET COLON type_expr .)
+
+WARNING: 
+WARNING: Conflicts:
+WARNING: 
+WARNING: shift/reduce conflict for DIRECTIVE in state 8 resolved as shift
+WARNING: shift/reduce conflict for IDENT in state 8 resolved as shift
+WARNING: shift/reduce conflict for IDENT in state 10 resolved as shift
