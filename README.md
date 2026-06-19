@@ -2,7 +2,7 @@
 
 VIRAL is a compiler built from scratch in Python, implementing a full compilation pipeline — lexical analysis, parsing, type checking, intermediate representation (IR) generation, and native code generation — paired with a web-based interface for writing, compiling, and testing source code interactively.
 
-## ✨ Features
+## Features
 
 - **Lexical Analysis** — Tokenizes source code (`lexer.py`)
 - **Parsing** — Builds an AST using a PLY-based grammar (`parser.py`, with auto-generated `parsetab.py` / `parser.out`)
@@ -14,7 +14,7 @@ VIRAL is a compiler built from scratch in Python, implementing a full compilatio
   - **RISC-V** (`backend_riscv.py`)
 - **Web Interface** — Browser-based editor to write source code, trigger compilation, and view output (React + Vite + TypeScript)
 
-## 🏗️ Architecture
+## Architecture
 
 ```
 Source Code
@@ -35,7 +35,7 @@ IR Generator (ir.py, ir_lower.py) ──► Lowered IR
 Backend (backend_x86.py / backend_arm64.py / backend_riscv.py) ──► Native Assembly
 ```
 
-## 📁 Project Structure
+## Project Structure
 
 ```
 VIRAL/
@@ -63,7 +63,7 @@ VIRAL/
 └── .env.example
 ```
 
-## 🚀 Getting Started
+## Getting Started
 
 ### Backend (Compiler)
 
@@ -85,7 +85,7 @@ npm run dev
 ```
 If the app uses an external API key (see `.env.example`), copy it to `.env.local` and fill in the value before running.
 
-## 👥 Contributors
+## Contributors
 
 | Contributor | Contributions |
 |---|---|
@@ -94,6 +94,6 @@ If the app uses an external API key (see `.env.example`), copy it to `.env.local
 
 *(Update this table to credit all team members accurately.)*
 
-## 📄 License
+## License
 
 No license file is currently included. Add one (e.g. MIT) if you plan to share or open-source this project.
