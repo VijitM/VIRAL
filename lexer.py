@@ -1,5 +1,6 @@
 """
-lexer.py — PLY lexer for portable typed assembly
+lexer.py — Pure-Python lexer for portable typed assembly
+         (drop-in replacement for the PLY-based original)
 
 Token categories
 ----------------
@@ -12,7 +13,7 @@ Token categories
                 HASH, PLUS, MINUS, NEWLINE, COMMENT
 """
 
-import ply.lex as lex
+import re
 
 # ---------------------------------------------------------------------------
 # Reserved words — checked inside t_IDENT so they shadow IDENT
@@ -37,108 +38,210 @@ TYPES = {
 }
 
 reserved = {}
-for op in OPCODES:
-    reserved[op] = 'OPCODE'
-for t in TYPES:
-    reserved[t] = 'TYPE'
+for _op in OPCODES:
+    reserved[_op] = 'OPCODE'
+for _t in TYPES:
+    reserved[_t] = 'TYPE'
 
 # ---------------------------------------------------------------------------
-# Token list
+# Token list (kept for reference / compatibility with callers that import it)
 # ---------------------------------------------------------------------------
 
 tokens = [
-    'REGISTER',       # r0, r1 … r15, rsp, rbp, rip (virtual regs)
-    'IDENT',          # labels, section names, symbol names
-    'INT_LIT',        # 42  0xFF  0b1010
-    'FLOAT_LIT',      # 3.14
-    'STRING_LIT',     # "hello"
-    'DIRECTIVE',      # .section  .global  etc.
-    'COLON',          # :
-    'COMMA',          # ,
-    'LBRACKET',       # [
-    'RBRACKET',       # ]
-    'LANGLE',         # <
-    'RANGLE',         # >
-    'HASH',           # #  (prefix for immediates)
-    'PLUS',           # +
-    'MINUS',          # -
-    'AT',             # @  (used in .type foo, @function)
+    'REGISTER',
+    'IDENT',
+    'INT_LIT',
+    'FLOAT_LIT',
+    'STRING_LIT',
+    'DIRECTIVE',
+    'COLON',
+    'COMMA',
+    'LBRACKET',
+    'RBRACKET',
+    'LANGLE',
+    'RANGLE',
+    'HASH',
+    'PLUS',
+    'MINUS',
+    'AT',
     'NEWLINE',
 ] + list(set(reserved.values()))   # OPCODE, TYPE
 
 # ---------------------------------------------------------------------------
-# Simple single-character tokens
+# Master regex  —  order mirrors PLY priority rules:
+#   1. Function-based rules in definition order (longer / more specific first)
+#   2. String rules sorted by decreasing pattern length
 # ---------------------------------------------------------------------------
 
-t_COLON    = r':'
-t_COMMA    = r','
-t_LBRACKET = r'\['
-t_RBRACKET = r'\]'
-t_LANGLE   = r'<'
-t_RANGLE   = r'>'
-t_HASH     = r'\#'
-t_PLUS     = r'\+'
-t_MINUS    = r'-'
-t_AT       = r'@'
+_TOKEN_RE = re.compile(
+    r"""
+    # Comments  (;  …  end-of-line) — captured so we can discard them
+    (?P<COMMENT>    ;[^\n]*                                         )
+    # Directives   .foo
+  | (?P<DIRECTIVE>  \.[a-zA-Z_][a-zA-Z0-9_]*                       )
+    # Float literals  (must come before INT so "3.14" isn't "3" + ".14")
+  | (?P<FLOAT_LIT>  \d+\.\d+(?:[eE][+-]?\d+)?                      )
+    # Integer literals  hex / binary / decimal
+  | (?P<INT_LIT>    0[xX][0-9a-fA-F]+|0[bB][01]+|\d+               )
+    # String literals   "…"  with escape sequences
+  | (?P<STRING_LIT> "(?:[^"\\]|\\.)*"                               )
+    # Registers  (must precede IDENT so "r0" is not tokenised as IDENT)
+  | (?P<REGISTER>   r(?:1[0-5]|[0-9])|rsp|rbp|rip|fp|sp|lr|pc|zero )
+    # Identifiers / reserved words
+  | (?P<IDENT>      [a-zA-Z_][a-zA-Z0-9_]*                         )
+    # Newlines  (one or more; we count them for lineno)
+  | (?P<NEWLINE>    \n+                                             )
+    # Single-character punctuation
+  | (?P<COLON>      :  )
+  | (?P<COMMA>      ,  )
+  | (?P<LBRACKET>   \[ )
+  | (?P<RBRACKET>   \] )
+  | (?P<LANGLE>     <  )
+  | (?P<RANGLE>     >  )
+  | (?P<HASH>       \# )
+  | (?P<PLUS>       \+ )
+  | (?P<MINUS>      -  )
+  | (?P<AT>         @  )
+    # Ignored whitespace (spaces / tabs)
+  | (?P<IGNORE>     [ \t]+                                          )
+    # Anything else is an illegal character
+  | (?P<ERROR>      .  )
+    """,
+    re.VERBOSE,
+)
 
 # ---------------------------------------------------------------------------
-# Ignored characters (spaces, tabs — NOT newlines)
+# LexToken  —  mirrors ply.lex.LexToken so downstream code is unaffected
 # ---------------------------------------------------------------------------
 
-t_ignore = ' \t'
+class LexToken:
+    """Minimal stand-in for ply.lex.LexToken."""
+    __slots__ = ('type', 'value', 'lineno', 'lexpos')
+
+    def __repr__(self):
+        return f"LexToken({self.type},{self.value!r},{self.lineno},{self.lexpos})"
+
 
 # ---------------------------------------------------------------------------
-# Rules with actions (order matters: longer rules first)
+# Lexer  —  mirrors the ply.lex.Lexer public interface used by the project
 # ---------------------------------------------------------------------------
 
-def t_COMMENT(t):
-    r';[^\n]*'
-    pass   # discard — use ; for comments, # is reserved for immediates
+class Lexer:
+    """
+    Drop-in replacement for the PLY lexer object.
 
-def t_DIRECTIVE(t):
-    r'\.[a-zA-Z_][a-zA-Z0-9_]*'
-    return t
+    Public interface
+    ----------------
+    lexer.input(text)       — feed source text
+    lexer.token()           — return the next LexToken or None
+    iter(lexer)             — iterate over all tokens
+    lexer.lineno            — current line number (1-based)
+    """
 
-def t_FLOAT_LIT(t):
-    r'\d+\.\d+([eE][+-]?\d+)?'
-    t.value = float(t.value)
-    return t
+    def __init__(self):
+        self.lineno: int = 1
+        self._tokens: list[LexToken] = []
+        self._pos: int = 0
 
-def t_INT_LIT(t):
-    r'0[xX][0-9a-fA-F]+|0[bB][01]+|\d+'
-    base = 16 if '0x' in t.value.lower() and t.value.lower().startswith('0x') else \
-           2  if '0b' in t.value.lower() and t.value.lower().startswith('0b') else 10
-    t.value = int(t.value, base)
-    return t
+    # ------------------------------------------------------------------
+    def input(self, text: str) -> None:
+        """Tokenise *text* and reset the internal cursor."""
+        self.lineno = 1
+        self._tokens = list(self._tokenise(text))
+        self._pos = 0
 
-def t_STRING_LIT(t):
-    r'"([^"\\]|\\.)*"'
-    t.value = t.value[1:-1]   # strip quotes
-    return t
+    # ------------------------------------------------------------------
+    def token(self) -> LexToken | None:
+        """Return the next token, or None at end-of-input."""
+        if self._pos >= len(self._tokens):
+            return None
+        tok = self._tokens[self._pos]
+        self._pos += 1
+        return tok
 
-def t_REGISTER(t):
-    r'r(?:1[0-5]|[0-9])|rsp|rbp|rip|fp|sp|lr|pc|zero'
-    return t
+    # ------------------------------------------------------------------
+    def __iter__(self):
+        return self
 
-def t_IDENT(t):
-    r'[a-zA-Z_][a-zA-Z0-9_]*'
-    t.type = reserved.get(t.value, 'IDENT')
-    return t
+    def __next__(self) -> LexToken:
+        tok = self.token()
+        if tok is None:
+            raise StopIteration
+        return tok
 
-def t_NEWLINE(t):
-    r'\n+'
-    t.lexer.lineno += len(t.value)
-    return t
+    # ------------------------------------------------------------------
+    # Internal tokeniser
+    # ------------------------------------------------------------------
 
-def t_error(t):
-    print(f"[Lexer] Illegal character {t.value[0]!r} at line {t.lexer.lineno}")
-    t.lexer.skip(1)
+    def _tokenise(self, text: str):
+        lineno = 1
+
+        for m in _TOKEN_RE.finditer(text):
+            kind = m.lastgroup
+            raw  = m.group()
+
+            # ---- skip whitespace ----------------------------------------
+            if kind == 'IGNORE':
+                continue
+
+            # ---- skip comments ------------------------------------------
+            if kind == 'COMMENT':
+                continue
+
+            # ---- error / illegal character ------------------------------
+            if kind == 'ERROR':
+                print(f"[Lexer] Illegal character {raw!r} at line {lineno}")
+                continue
+
+            # ---- newlines (count but still emit) ------------------------
+            if kind == 'NEWLINE':
+                tok        = LexToken()
+                tok.type   = 'NEWLINE'
+                tok.value  = raw
+                tok.lineno = lineno
+                tok.lexpos = m.start()
+                lineno    += len(raw)   # raw is one or more '\n'
+                yield tok
+                continue
+
+            # ---- build token --------------------------------------------
+            tok        = LexToken()
+            tok.type   = kind
+            tok.lineno = lineno
+            tok.lexpos = m.start()
+
+            # value conversions
+            if kind == 'INT_LIT':
+                low = raw.lower()
+                base = 16 if low.startswith('0x') else \
+                       2  if low.startswith('0b') else 10
+                tok.value = int(raw, base)
+
+            elif kind == 'FLOAT_LIT':
+                tok.value = float(raw)
+
+            elif kind == 'STRING_LIT':
+                tok.value = raw[1:-1]   # strip surrounding quotes
+
+            elif kind == 'IDENT':
+                # promote reserved words to OPCODE / TYPE
+                tok.type  = reserved.get(raw, 'IDENT')
+                tok.value = raw
+
+            else:
+                tok.value = raw
+
+            yield tok
+
+        # update the public lineno so callers see the final line
+        self.lineno = lineno
+
 
 # ---------------------------------------------------------------------------
-# Build
+# Module-level lexer instance  —  matches PLY's  `lexer = lex.lex()`
 # ---------------------------------------------------------------------------
 
-lexer = lex.lex()
+lexer = Lexer()
 
 
 # ---------------------------------------------------------------------------
