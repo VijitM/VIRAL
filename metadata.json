@@ -1,0 +1,6 @@
+{
+  "name": "VIRAL",
+  "description": "Portable Typed Assembly to Target Machine Code compiler built with React and a mockup backend.",
+  "requestFramePermissions": [],
+  "majorCapabilities": []
+}
